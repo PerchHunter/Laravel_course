@@ -41,8 +41,6 @@
                 });
         });
 
-    Route::any('/error404')->name('error404');
+    Route::any('/error404', fn() => view('error404'))->name('error404');
 
-    Route::fallback( function (){
-        return route('error404');
-    });
+    Route::fallback( fn() => view('error404'));
