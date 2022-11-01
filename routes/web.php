@@ -1,27 +1,48 @@
 <?php
-//    phpinfo();
 
     use Illuminate\Support\Facades\Route;
     use App\Http\Controllers\HomeController;
-    use App\Http\Controllers\NewsController;
+    use App\Http\Controllers\Users\News\NewsController;
+    use \App\Http\Controllers\Users\Auth\Auth;
+    use \App\Http\Controllers\Admin\News\AddNews;
 
-    /*
-    |--------------------------------------------------------------------------
-    | Web Routes
-    |--------------------------------------------------------------------------
-    |
-    | Here is where you can register web routes for your application. These
-    | routes are loaded by the RouteServiceProvider within a group which
-    | contains the "web" middleware group. Now create something great!
-    |
-    */
 
-    Route::get('/', [HomeController::class, 'index']);
+    Route::get('/', [HomeController::class, 'index'])->name('homePage');
 
-    Route::get('/about_us', [HomeController::class, 'about_us'])->name('about_us');
+    Route::view('/aboutUs', 'aboutUs')->name('aboutUs');
 
-    Route::get('/news/{newsId?}', [NewsController::class, 'index'])->name('news')->where(['newsId' => '[0-9]+']);
+    Route::name('users.')
+        ->prefix('users')
+        ->group(function () {
+
+            Route::name('news.')
+                ->prefix('news')
+                ->group(function() {
+                    Route::get('/', [NewsController::class, 'index'])->name('allCategories');
+                    Route::get('/{categoryKey}/{newsId?}', [NewsController::class, 'getNewsConcreteCategory'])->name('concreteCategory');
+                });
+
+            Route::name('auth.')
+                ->group(function() {
+                    Route::match(['get', 'post'], '/authorization', [Auth::class, 'authorization'])->name('authorization');
+                    Route::match(['get', 'post'], '/registration', [Auth::class, 'registration'])->name('registration');
+                });
+        });
+
+
+    Route::name('admin.')
+        ->prefix('admin')
+        ->group(function() {
+
+            Route::name('news.')
+                ->prefix('news')
+                ->group(function() {
+                    Route::match(['get', 'post'], '/add', [AddNews::class, 'index'])->name('add');
+                });
+        });
+
+    Route::any('/error404')->name('error404');
 
     Route::fallback( function (){
-        return 'Страница не найдена';
-    })->name('error404');
+        return route('error404');
+    });
