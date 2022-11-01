@@ -1,0 +1,19 @@
+.mainBlock {
+    width: 600px;
+    height: 100px;
+    margin: 200px auto 0;
+}
+
+.mainBlock__title {
+    text-align: center;
+}
+
+.mainBlock__links {
+    text-decoration: none;
+}
+
+.link__button {
+    width: 100px;
+    height: 30px;
+    cursor: pointer;
+}
